@@ -1,8 +1,8 @@
 package be.vdab.fuckingHibernate.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import be.vdab.fuckingHibernate.enums.Geslacht;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -16,6 +16,12 @@ public class Docent implements Serializable {
     private String familienaam;
     private BigDecimal wedde;
     private String emailAdres;
+    @Enumerated(EnumType.STRING)
+    private Geslacht geslacht;
+
+    public Geslacht getGeslacht() {
+        return geslacht;
+    }
 
     public long getId() {
         return id;
