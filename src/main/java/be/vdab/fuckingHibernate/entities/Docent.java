@@ -27,7 +27,7 @@ public class Docent implements Serializable {
         this.emailAdres = emailAdres;
         this.geslacht = geslacht;
     }
-
+    private int lol;
     protected Docent() {
     }
 
