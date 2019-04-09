@@ -4,6 +4,8 @@ import be.vdab.fuckingHibernate.entities.Docent;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,5 +29,18 @@ public class JpaDocentRepository implements DocentRepository {
     @Override
     public void delete(long id) {
         read(id).ifPresent(docent -> manager.remove(docent));
+    }
+
+    @Override
+    public List<Docent> findAll() {
+        return manager.createQuery("select d from Docent d order by d.wedde", Docent.class).getResultList();
+    }
+
+    @Override
+    public List<Docent> findByWeddeBetween(BigDecimal van, BigDecimal tot) {
+        return manager.createQuery("select d from Docent d where d.wedde between :van and :tot", Docent.class)
+                .setParameter("van", van)
+                .setParameter("tot", tot)
+                .getResultList();
     }
 }

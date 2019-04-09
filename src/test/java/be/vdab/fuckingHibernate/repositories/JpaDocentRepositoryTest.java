@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -75,6 +76,29 @@ public class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringCo
         manager.flush();
         assertEquals(aantalDocenten - 1, super.countRowsInTable(DOCENTEN));
         assertEquals(0, super.countRowsInTableWhere(DOCENTEN, "id=" + id));
+    }
+    @Test
+    public void findAll() {
+        List<Docent> docenten = repository.findAll();
+        assertEquals(super.countRowsInTable(DOCENTEN), docenten.size());
+        BigDecimal vorigeWedde = BigDecimal.ZERO;
+        for (Docent docent : docenten) {
+            assertTrue(docent.getWedde().compareTo(vorigeWedde) >= 0);
+            vorigeWedde = docent.getWedde();
+        }
+    }
+
+    @Test
+    public void findByWeddeBetween() {
+        BigDecimal duizend = BigDecimal.valueOf(1_000);
+        BigDecimal tweeduizend = BigDecimal.valueOf(2_000);
+        List<Docent> docenten = repository.findByWeddeBetween(duizend, tweeduizend);
+        long aantalDocenten = super.countRowsInTableWhere(DOCENTEN, "wedde between 1000 and 2000");
+        assertEquals(aantalDocenten, docenten.size());
+        docenten.forEach(docent -> {
+            assertTrue(docent.getWedde().compareTo(duizend) >= 0);
+            assertTrue(docent.getWedde().compareTo(tweeduizend) <= 0);
+        });
     }
 
 }
