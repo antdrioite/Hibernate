@@ -5,6 +5,8 @@ import be.vdab.fuckingHibernate.enums.Geslacht;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 @Entity
 @Table(name = "docenten")
@@ -27,7 +29,6 @@ public class Docent implements Serializable {
         this.emailAdres = emailAdres;
         this.geslacht = geslacht;
     }
-    private int lol;
     protected Docent() {
     }
 
@@ -53,5 +54,13 @@ public class Docent implements Serializable {
 
     public String getEmailAdres() {
         return emailAdres;
+    }
+
+    public void opslag(BigDecimal percentage) {
+        if (percentage.compareTo(BigDecimal.ZERO) <=0) {
+            throw new IllegalArgumentException();
+        }
+        BigDecimal factor = BigDecimal.ONE.add(percentage.divide(BigDecimal.valueOf(100)));
+        wedde = wedde.multiply(factor, new MathContext(2, RoundingMode.HALF_UP));
     }
 }
