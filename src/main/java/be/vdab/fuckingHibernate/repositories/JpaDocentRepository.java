@@ -1,6 +1,8 @@
 package be.vdab.fuckingHibernate.repositories;
 
 import be.vdab.fuckingHibernate.entities.Docent;
+import be.vdab.fuckingHibernate.queryresult.AantalDocentenPerWedde;
+import be.vdab.fuckingHibernate.queryresult.IdEnEmailAdres;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -38,9 +40,30 @@ public class JpaDocentRepository implements DocentRepository {
 
     @Override
     public List<Docent> findByWeddeBetween(BigDecimal van, BigDecimal tot) {
-        return manager.createQuery("select d from Docent d where d.wedde between :van and :tot", Docent.class)
+        return manager.createNamedQuery("Docent.findByWeddeBetween", Docent.class)
                 .setParameter("van", van)
                 .setParameter("tot", tot)
                 .getResultList();
+    }
+
+    @Override
+    public List<String> findEmailAdressen() {
+        return manager.createQuery("select d.emailAdres from Docent d", String.class).getResultList();
+    }
+
+    @Override
+    public List<IdEnEmailAdres> findIdsEnEmailAdressen() {
+        return manager.createQuery("select new be.vdab.fuckingHibernate.queryresult.IdEnEmailAdres(d.id, d.emailAdres) from Docent d", IdEnEmailAdres.class).getResultList();
+    }
+
+    @Override
+    public BigDecimal findGrootsteWedde() {
+        return manager.createQuery("select max(d.wedde) from Docent d", BigDecimal.class).getSingleResult();
+    }
+
+    @Override
+    public List<AantalDocentenPerWedde> findAantalDocentenPerWedde() {
+        return manager.createQuery(
+                "select new be.vdab.fuckingHibernate.queryresult.AantalDocentenPerWedde(d.wedde, count(d)) from Docent d group by d.wedde", AantalDocentenPerWedde.class).getResultList();
     }
 }

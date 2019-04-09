@@ -1,6 +1,8 @@
 package be.vdab.fuckingHibernate.repositories;
 
 import be.vdab.fuckingHibernate.entities.Docent;
+import be.vdab.fuckingHibernate.queryresult.AantalDocentenPerWedde;
+import be.vdab.fuckingHibernate.queryresult.IdEnEmailAdres;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -12,4 +14,8 @@ public interface DocentRepository {
     void delete(long id);
     List<Docent> findAll();
     List<Docent> findByWeddeBetween(BigDecimal van, BigDecimal tot);
+    List<String> findEmailAdressen();
+    List<IdEnEmailAdres> findIdsEnEmailAdressen();
+    BigDecimal findGrootsteWedde();
+    List<AantalDocentenPerWedde> findAantalDocentenPerWedde();
 }

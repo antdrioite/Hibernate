@@ -2,6 +2,8 @@ package be.vdab.fuckingHibernate.repositories;
 
 import be.vdab.fuckingHibernate.entities.Docent;
 import be.vdab.fuckingHibernate.enums.Geslacht;
+import be.vdab.fuckingHibernate.queryresult.AantalDocentenPerWedde;
+import be.vdab.fuckingHibernate.queryresult.IdEnEmailAdres;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -100,5 +102,33 @@ public class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringCo
             assertTrue(docent.getWedde().compareTo(tweeduizend) <= 0);
         });
     }
+    @Test
+    public void findEmailAdressen() {
+        List<String> adressen = repository.findEmailAdressen();
+        long aantal = super.jdbcTemplate.queryForObject("select count(distinct emailadres) from docenten", Long.class);
+        assertEquals(aantal, adressen.size());
+        adressen.forEach(adres -> assertTrue(adres.contains("@")));
+    }
 
+    @Test
+    public void findIdsEnEmailAdressen() {
+        List<IdEnEmailAdres> idsEnAdressen = repository.findIdsEnEmailAdressen();
+        assertEquals(super.countRowsInTable(DOCENTEN), idsEnAdressen.size());
+    }
+    @Test
+    public void findGrootsteWedde() {
+        BigDecimal grootste = repository.findGrootsteWedde();
+        BigDecimal grootste2 = super.jdbcTemplate.queryForObject("select max(wedde) from docenten", BigDecimal.class);
+        assertEquals(0, grootste.compareTo(grootste2));
+    }
+    @Test
+    public void findAantalDocentenPerWedde() {
+        List<AantalDocentenPerWedde> aantalDocentenPerWedde = repository.findAantalDocentenPerWedde();
+        long aantalUniekeWeddes = super.jdbcTemplate.queryForObject("select count(distinct wedde) from docenten", Long.class);
+        assertEquals(aantalUniekeWeddes, aantalDocentenPerWedde.size());
+        long aantalDocentenMetWedde1000 = super.countRowsInTableWhere(DOCENTEN, "wedde = 1000");
+        aantalDocentenPerWedde.stream()
+                .filter(aantalPerWedde -> aantalPerWedde.getWedde().compareTo(BigDecimal.valueOf(1_000)) == 0)
+                .forEach(aantalPerWedde -> assertEquals(aantalDocentenMetWedde1000, aantalPerWedde.getAantal()));
+    }
 }
