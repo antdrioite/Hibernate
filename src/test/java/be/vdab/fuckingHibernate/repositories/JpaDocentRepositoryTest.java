@@ -13,6 +13,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 
 import static org.junit.Assert.*;
@@ -25,6 +26,8 @@ import static org.junit.Assert.*;
 public class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringContextTests {
     @Autowired
     private JpaDocentRepository repository;
+    @Autowired
+    private EntityManager manager;
     private static final String DOCENTEN = "docenten";
     private Docent docent;
     private long idVanTestMan() {
@@ -63,6 +66,15 @@ public class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringCo
     @Test
     public void vrouw() {
         assertEquals(Geslacht.VROUW, repository.read(idVanTestVrouw()).get().getGeslacht());
+    }
+    @Test
+    public void delete() {
+        long id = idVanTestMan();
+        int aantalDocenten = super.countRowsInTable(DOCENTEN);
+        repository.delete(id);
+        manager.flush();
+        assertEquals(aantalDocenten - 1, super.countRowsInTable(DOCENTEN));
+        assertEquals(0, super.countRowsInTableWhere(DOCENTEN, "id=" + id));
     }
 
 }
