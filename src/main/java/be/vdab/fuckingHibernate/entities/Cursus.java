@@ -3,9 +3,8 @@ package be.vdab.fuckingHibernate.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "cursussen")
-@DiscriminatorColumn(name = "soort")
 public abstract class Cursus implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

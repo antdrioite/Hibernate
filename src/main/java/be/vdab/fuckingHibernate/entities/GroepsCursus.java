@@ -2,10 +2,11 @@ package be.vdab.fuckingHibernate.entities;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.LocalDate;
 
 @Entity
-@DiscriminatorValue("G")
+@Table(name = "groepscursussen")
 public class GroepsCursus extends Cursus {
     private static final long serialVersionUID = 1L;
     private LocalDate van;
