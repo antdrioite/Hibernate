@@ -2,6 +2,7 @@ package be.vdab.fuckingHibernate.repositories;
 
 import be.vdab.fuckingHibernate.entities.Campus;
 import be.vdab.fuckingHibernate.valueobjects.Adres;
+import be.vdab.fuckingHibernate.valueobjects.TelefoonNr;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,7 @@ import org.springframework.test.context.junit4.AbstractTransactionalJUnit4Spring
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -44,5 +46,11 @@ public class JpaCampusRepositoryTest extends AbstractTransactionalJUnit4SpringCo
         repository.create(campus);
         assertEquals(aantalCampussen + 1, super.countRowsInTable(CAMPUSSEN));
         assertEquals(1, super.countRowsInTableWhere(CAMPUSSEN, "id="+campus.getId()));
+    }
+    @Test
+    public void telefoonNrsLezen() {
+        Campus campus = repository.read(idVanTestCampus()).get();
+        assertEquals(1, campus.getTelefoonNrs().size());
+        assertTrue(campus.getTelefoonNrs().contains(new TelefoonNr("1", false, "test")));
     }
 }
