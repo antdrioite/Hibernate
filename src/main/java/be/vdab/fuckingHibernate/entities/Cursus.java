@@ -2,24 +2,25 @@ package be.vdab.fuckingHibernate.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.UUID;
+
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "cursussen")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Cursus implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id;
     private String naam;
 
     public Cursus(String naam) {
         this.naam = naam;
+        id = UUID.randomUUID().toString();
     }
 
     protected Cursus() {
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 

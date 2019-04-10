@@ -1,6 +1,5 @@
 package be.vdab.fuckingHibernate.entities;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
