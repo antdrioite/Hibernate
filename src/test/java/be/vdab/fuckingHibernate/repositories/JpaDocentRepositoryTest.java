@@ -2,6 +2,7 @@ package be.vdab.fuckingHibernate.repositories;
 
 import be.vdab.fuckingHibernate.entities.Campus;
 import be.vdab.fuckingHibernate.entities.Docent;
+import be.vdab.fuckingHibernate.entities.Verantwoordelijkheid;
 import be.vdab.fuckingHibernate.enums.Geslacht;
 import be.vdab.fuckingHibernate.queryresult.AantalDocentenPerWedde;
 import be.vdab.fuckingHibernate.queryresult.IdEnEmailAdres;
@@ -27,7 +28,9 @@ import static org.junit.Assert.*;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Sql("/insertCampus.sql")
+@Sql("/insertVerantwoordelijkheid.sql")
 @Sql("/insertDocent.sql")
+@Sql("/insertDocentVerantwoordelijkheid.sql")
 @Import(JpaDocentRepository.class)
 public class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringContextTests {
     @Autowired
@@ -172,5 +175,23 @@ public class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringCo
     public void campusLazyLoaded() {
         Docent docent = repository.read(idVanTestMan()).get();
         assertEquals("test", docent.getCampus().getNaam());
+    }
+    @Test
+    public void verantwoordelijkhedenLezen() {
+        Docent docent = repository.read(idVanTestMan()).get();
+        assertEquals(1, docent.getVerantwoordelijkheden().size());
+        assertTrue(docent.getVerantwoordelijkheden().contains(new Verantwoordelijkheid("test")));
+    }
+    @Test
+    public void verantwoordelijkheidToevoegen() {
+        Verantwoordelijkheid verantwoordelijkheid = new Verantwoordelijkheid("test2");
+        manager.persist(verantwoordelijkheid);
+        manager.persist(campus);
+        repository.create(docent);
+        docent.add(verantwoordelijkheid);
+        manager.flush();
+        assertEquals(verantwoordelijkheid.getId(),
+                super.jdbcTemplate.queryForObject("select verantwoordelijkheidid from docentenverantwoordelijkheden " +
+                "where docentid=?", Long.class, docent.getId()).longValue());
     }
 }

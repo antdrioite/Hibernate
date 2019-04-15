@@ -32,6 +32,9 @@ public class Docent implements Serializable {
     @CollectionTable(name = "docentenbijnamen", joinColumns = @JoinColumn(name = "docentid"))
     @Column(name = "bijnaam")
     private Set<String> bijnamen;
+    @ManyToMany(mappedBy = "docenten")
+    private Set<Verantwoordelijkheid> verantwoordelijkheden = new LinkedHashSet<>();
+
 
     public Docent(String voornaam, String familienaam, BigDecimal wedde, String emailAdres, Geslacht geslacht, Campus campus) {
         this.voornaam = voornaam;
@@ -100,6 +103,24 @@ public class Docent implements Serializable {
     }
     public boolean removeBijnaam(String bijnaam) {
         return bijnamen.remove(bijnaam);
+    }
+    public boolean add(Verantwoordelijkheid verantwoordelijkheid) {
+        boolean toegevoegd = verantwoordelijkheden.add(verantwoordelijkheid);
+        if (!verantwoordelijkheid.getDocenten().contains(this)) {
+            verantwoordelijkheid.add(this);
+        }
+        return toegevoegd;
+    }
+    public boolean remove(Verantwoordelijkheid verantwoordelijkheid) {
+        boolean verwijderd = verantwoordelijkheden.remove(verantwoordelijkheid);
+        if (verantwoordelijkheid.getDocenten().contains(this)) {
+            verantwoordelijkheid.remove(this);
+        }
+        return verwijderd;
+    }
+    public Set<Verantwoordelijkheid> getVerantwoordelijkheden() {
+        return Collections.unmodifiableSet(verantwoordelijkheden);
+
     }
 
     @Override
