@@ -1,9 +1,11 @@
 package be.vdab.fuckingHibernate.repositories;
 
+import be.vdab.fuckingHibernate.entities.Campus;
 import be.vdab.fuckingHibernate.entities.Docent;
 import be.vdab.fuckingHibernate.enums.Geslacht;
 import be.vdab.fuckingHibernate.queryresult.AantalDocentenPerWedde;
 import be.vdab.fuckingHibernate.queryresult.IdEnEmailAdres;
+import be.vdab.fuckingHibernate.valueobjects.Adres;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +26,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Sql("/insertCampus.sql")
 @Sql("/insertDocent.sql")
 @Import(JpaDocentRepository.class)
 public class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringContextTests {
@@ -32,6 +35,7 @@ public class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringCo
     @Autowired
     private EntityManager manager;
     private static final String DOCENTEN = "docenten";
+    private Campus campus;
     private Docent docent;
     private long idVanTestMan() {
         return super.jdbcTemplate.queryForObject("select id from docenten where voornaam = 'testM'", Long.class);
@@ -42,15 +46,20 @@ public class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringCo
 
     @Before
     public void before() {
-        docent = new Docent("test", "test", BigDecimal.TEN, "test@fietsacademy.be", Geslacht.MAN);
+        campus = new Campus("test", new Adres("test", "test", "test", "test"));
+        docent = new Docent("test", "test", BigDecimal.TEN, "test@fietsacademy.be", Geslacht.MAN, campus);
     }
     @Test
     public void create() {
+        manager.persist(campus);
         int aantalDocenten = super.countRowsInTable(DOCENTEN);
         repository.create(docent);
         assertEquals(aantalDocenten + 1, super.countRowsInTable("docenten"));
         assertNotEquals(0, docent.getId());
         assertEquals(1, super.countRowsInTableWhere(DOCENTEN, "id=" + docent.getId()));
+        assertEquals(campus.getId(), super.jdbcTemplate.queryForObject(
+                "select campusid from docenten where id=?", Long.class, docent.getId())
+                .longValue());
     }
     @Test
     public void read() {
@@ -142,6 +151,7 @@ public class JpaDocentRepositoryTest extends AbstractTransactionalJUnit4SpringCo
     }
     @Test
     public void bijnaamToevoegen() {
+        manager.persist(campus);
         repository.create(docent);
         docent.addBijnaam("test");
         manager.flush();

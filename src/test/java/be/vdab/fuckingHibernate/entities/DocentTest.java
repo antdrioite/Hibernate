@@ -1,6 +1,7 @@
 package be.vdab.fuckingHibernate.entities;
 
 import be.vdab.fuckingHibernate.enums.Geslacht;
+import be.vdab.fuckingHibernate.valueobjects.Adres;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,10 +11,12 @@ import static org.junit.Assert.*;
 
 public class DocentTest {
     private final static BigDecimal ORIGINELE_WEDDE = BigDecimal.valueOf(200);
+    private Campus campus1;
     private Docent docent1;
     @Before
     public void before() {
-        docent1 = new Docent("test", "test", ORIGINELE_WEDDE, "test@fietsacademy.be", Geslacht.MAN);
+        campus1 = new Campus("test", new Adres("test", "test", "test", "test"));
+        docent1 = new Docent("test", "test", ORIGINELE_WEDDE, "test@fietsacademy.be", Geslacht.MAN, campus1);
     }
 
     @Test
