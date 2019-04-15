@@ -9,6 +9,7 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -96,5 +97,17 @@ public class Docent implements Serializable {
     }
     public boolean removeBijnaam(String bijnaam) {
         return bijnamen.remove(bijnaam);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Docent)) return false;
+        if (emailAdres == null) return false;
+        return emailAdres.equalsIgnoreCase(((Docent)o).emailAdres);
+    }
+
+    @Override
+    public int hashCode() {
+        return emailAdres == null ? 0 : emailAdres.toLowerCase().hashCode();
     }
 }

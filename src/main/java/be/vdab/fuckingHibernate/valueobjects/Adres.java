@@ -2,6 +2,8 @@ package be.vdab.fuckingHibernate.valueobjects;
 
 import javax.persistence.Embeddable;
 import java.io.Serializable;
+import java.util.Objects;
+
 @Embeddable
 public class Adres implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -34,5 +36,21 @@ public class Adres implements Serializable {
 
     public String getGemeente() {
         return gemeente;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Adres)) return false;
+        Adres adres = (Adres) o;
+        return straat.equals(adres.straat) &&
+                huisNr.equals(adres.huisNr) &&
+                postcode.equals(adres.postcode) &&
+                gemeente.equals(adres.gemeente);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(straat, huisNr, postcode, gemeente);
     }
 }
