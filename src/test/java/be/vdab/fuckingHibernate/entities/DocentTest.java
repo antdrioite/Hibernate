@@ -16,7 +16,7 @@ public class DocentTest {
     @Before
     public void before() {
         campus1 = new Campus("test", new Adres("test", "test", "test", "test"));
-        docent1 = new Docent("test", "test", ORIGINELE_WEDDE, "test@fietsacademy.be", Geslacht.MAN, campus1);
+        docent1 = new Docent("test", "test", ORIGINELE_WEDDE, "test@fietsacademy.be", Geslacht.MAN/*, campus1*/);
     }
 
     @Test
