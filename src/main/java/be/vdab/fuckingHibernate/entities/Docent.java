@@ -24,7 +24,7 @@ public class Docent implements Serializable {
     private String emailAdres;
     @Enumerated(EnumType.STRING)
     private Geslacht geslacht;
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "campusid")
     private Campus campus;
     @ElementCollection
